@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}BizTrack{% endblock %}</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body><nav><b>BizTrack</b><a href="{{ url_for('dashboard') }}">Dashboard</a><a href="{{ url_for('requests_list') }}">Requests</a><a href="{{ url_for('kanban') }}">Kanban</a>
+<span class="sp"></span><a href="{{ url_for('report_excel') }}">Excel report</a><a class="btn" href="{{ url_for('request_new') }}">+ New request</a></nav>
+<main>{% with m = get_flashed_messages(with_categories=true) %}{% for c, t in m %}<div class="flash {{ c }}">{{ t }}</div>{% endfor %}{% endwith %}
+{% block content %}{% endblock %}</main></body></html>

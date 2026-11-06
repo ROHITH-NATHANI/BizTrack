@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block content %}
+<div class="header-with-actions">
+  <h1>Requests</h1>
+  <div class="view-switch">
+    <a href="{{ url_for('requests_list') }}" class="view-btn active">📋 Table View</a>
+    <a href="{{ url_for('kanban') }}" class="view-btn">📊 Kanban Board</a>
+  </div>
+</div>
+<form class="filters" method="get"><input name="q" placeholder="Search title / requester" value="{{ f.q }}">
+<select name="status"><option value="">All statuses</option>{% for s in STATUSES %}<option {{ 'selected' if f.status==s }}>{{ s }}</option>{% endfor %}</select>
+<select name="priority"><option value="">All priorities</option>{% for s in PRIORITIES %}<option {{ 'selected' if f.priority==s }}>{{ s }}</option>{% endfor %}</select>
+<select name="category"><option value="">All categories</option>{% for s in CATEGORIES %}<option {{ 'selected' if f.category==s }}>{{ s }}</option>{% endfor %}</select>
+<button>Filter</button><a class="btn ghost" href="{{ url_for('requests_list') }}">Reset</a></form>
+<div class="card"><table><tr><th>#</th><th>Title</th><th>Category</th><th>Requester</th><th>Status</th><th>Priority</th><th>Due</th></tr>
+{% for r in rows %}<tr><td>{{ r.id }}</td><td><a href="{{ url_for('request_detail', rid=r.id) }}">{{ r.title }}</a></td><td>{{ r.category }}</td><td>{{ r.requester }}</td>
+<td><span class="badge s-{{ r.status|slug }}">{{ r.status }}</span></td><td><span class="badge p-{{ r.priority|slug }}">{{ r.priority }}</span></td>
+<td class="{{ 'overdue' if r.due_date < today() and r.status in ['New','In Progress','On Hold'] }}">{{ r.due_date }}</td></tr>
+{% else %}<tr><td colspan="7" class="muted">No requests found.</td></tr>{% endfor %}</table></div>{% endblock %}

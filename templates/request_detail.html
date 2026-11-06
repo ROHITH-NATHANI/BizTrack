@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block content %}
+<div class="row"><h1 style="flex:1">#{{ r.id }} · {{ r.title }}</h1>
+<span class="badge s-{{ r.status|slug }}">{{ r.status }}</span><span class="badge p-{{ r.priority|slug }}">{{ r.priority }}</span></div>
+<div class="grid two"><div class="card"><h2>Details</h2><p>{{ r.description or '—' }}</p>
+<p class="muted">{{ r.category }} · {{ r.requester }} ({{ r.department }})<br>Created {{ r.created_at }} · Due {{ r.due_date }}{% if r.closed_at %} · Closed {{ r.closed_at }}{% endif %}</p>
+{% if TRANSITIONS[r.status] %}<h2>Move to</h2><div class="row">{% for s in TRANSITIONS[r.status] %}
+<form class="inline" method="post" action="{{ url_for('request_status', rid=r.id) }}"><input type="hidden" name="status" value="{{ s }}"><button class="ghost">{{ s }}</button></form>{% endfor %}</div>{% endif %}</div>
+<div class="card"><h2>History</h2><table>{% for h in hist %}<tr><td class="muted">{{ h.changed_at }}</td><td>{{ h.old_status or '—' }} → <b>{{ h.new_status }}</b></td><td class="muted">{{ h.note }}</td></tr>{% endfor %}</table></div></div>
+<div class="card"><h2>Tasks</h2><table><tr><th>Task</th><th>Assignee</th><th>Due</th><th>Status</th><th></th></tr>
+{% for t in tasks %}<tr><td>{{ t.title }}</td><td>{{ t.assignee }}</td><td>{{ t.due_date or '—' }}</td><td><span class="badge s-{{ t.status|slug }}">{{ t.status }}</span></td>
+<td><form class="inline" method="post" action="{{ url_for('task_status', tid=t.id) }}"><select name="status" onchange="this.form.submit()">
+{% for s in TASK_STATUSES %}<option {{ 'selected' if s==t.status }}>{{ s }}</option>{% endfor %}</select></form></td></tr>
+{% else %}<tr><td colspan="5" class="muted">No tasks yet.</td></tr>{% endfor %}</table>
+<form method="post" action="{{ url_for('task_add', rid=r.id) }}" class="row" style="margin-top:14px">
+<input name="title" placeholder="New task" required><input name="assignee" placeholder="Assignee" required><input type="date" name="due_date"><button>Add task</button></form></div>{% endblock %}

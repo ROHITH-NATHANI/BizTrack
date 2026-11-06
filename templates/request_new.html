@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}<h1>New request</h1>
+<div class="card" style="max-width:640px"><form method="post" class="stack">
+<label>Title *</label><input name="title" required value="{{ f.get('title','') }}">
+<label>Description</label><textarea name="description" rows="3">{{ f.get('description','') }}</textarea>
+<div class="row"><div style="flex:1"><label>Category</label><select name="category">{% for c in CATEGORIES %}<option>{{ c }}</option>{% endfor %}</select></div>
+<div style="flex:1"><label>Priority</label><select name="priority">{% for p in PRIORITIES %}<option {{ 'selected' if p=='Medium' }}>{{ p }}</option>{% endfor %}</select></div></div>
+<div class="row"><div style="flex:1"><label>Requester *</label><input name="requester" required value="{{ f.get('requester','') }}"></div>
+<div style="flex:1"><label>Department *</label><input name="department" required value="{{ f.get('department','') }}"></div></div>
+<label>Due date</label><input type="date" name="due_date" min="{{ today() }}"><br><br><button>Create request</button></form></div>{% endblock %}

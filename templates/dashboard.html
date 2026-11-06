@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block content %}
+<div class="row"><h1 style="flex:1">Performance dashboard</h1>
+<form method="post" action="{{ url_for('automation_run') }}" class="inline"><button class="ghost">Run automation</button></form></div>
+<div class="grid kpis">
+<div class="card kpi"><small>Total requests</small><strong id="k-total">{{ k.total }}</strong></div>
+<div class="card kpi"><small>Open</small><strong>{{ k.open }}</strong></div>
+<div class="card kpi ok"><small>Completed</small><strong>{{ k.completed }}</strong></div>
+<div class="card kpi bad"><small>Overdue</small><strong>{{ k.overdue }}</strong></div>
+<div class="card kpi"><small>Avg resolution (days)</small><strong>{{ k.avg_resolution_days }}</strong></div>
+<div class="card kpi ok"><small>SLA compliance</small><strong>{{ k.sla_compliance_pct }}%</strong></div></div>
+<div class="grid two"><div class="card"><h2>Monthly created vs completed</h2><canvas id="trend"></canvas></div>
+<div class="card"><h2>Requests by status</h2><canvas id="status"></canvas></div></div>
+<div class="grid two"><div class="card"><h2>By category</h2><canvas id="cat"></canvas></div>
+<div class="card"><h2>Team workload (tasks)</h2><canvas id="load"></canvas></div></div>
+<div class="card"><h2>Recently updated</h2><table><tr><th>#</th><th>Title</th><th>Status</th><th>Priority</th><th>Due</th></tr>
+{% for r in recent %}<tr><td>{{ r.id }}</td><td><a href="{{ url_for('request_detail', rid=r.id) }}">{{ r.title }}</a></td>
+<td><span class="badge s-{{ r.status|slug }}">{{ r.status }}</span></td><td><span class="badge p-{{ r.priority|slug }}">{{ r.priority }}</span></td><td>{{ r.due_date }}</td></tr>{% endfor %}</table></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+{% endblock %}
